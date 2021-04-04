@@ -34,7 +34,7 @@ public class WorkFlowEngine {
      * 启动作业
      */
     public ResultBean<List<NodeBean>> startJob(Integer processId) {
-        logger.info("启动工作流：{}", processId);
+        logger.info("【WF->>{}】，工作流启动。", processId);
         return service.startJob(processId);
     }
 
@@ -42,7 +42,7 @@ public class WorkFlowEngine {
      * 获取下一任务
      */
     public ResultBean<List<NodeBean>> getNextTask(Integer jobId, Integer processId, Integer nodeId) {
-        logger.info("作业: {}, 流程:{}, 节点: {}", jobId, processId, nodeId);
+        logger.info("【WF->>{}】, 执行作业任务-{}", processId, jobId + "-" + nodeId);
         return service.getNextTask(jobId, processId, nodeId);
     }
 }

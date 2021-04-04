@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +62,8 @@ public class WorkFlowService {
 
         // 01-处理开始节点
         NodePO startNode = nodeService.findStartNode(processId);
+        if(Objects.isNull(startNode))
+            logger.error("");
         NodeBean startNodeBean = new NodeBean();
         BeanUtils.copyProperties(startNode, startNodeBean);
         taskService.startTask(jobId, processId, startNode.getId());
@@ -72,14 +75,16 @@ public class WorkFlowService {
 
         if (!CollectionUtils.isEmpty(todoNodeList)) {
             // 03-判断任务是否完成
-            if (todoNodeList.size() == 1 && todoNodeList.get(0).getType().equals(Constants.TASK_END))
+            if (todoNodeList.size() == 1 && todoNodeList.get(0).getType().equals(Constants.TASK_END)) {
+                logger.info("【WF->>{}】, 返回结束节点-{}", processId + "-" + startNode.getId() + "-" + jobId, todoNodeList.get(0).getId());
                 return finishJob(result, jobId);
+            }
             for (NodeBean x : todoNodeList) {
                 taskService.startTask(jobId, processId, x.getId());
             }
         }
 
-        logger.info("待执行任务数量{}", todoNodeList.size());
+        logger.info("【WF->>{}】, 下一待执行任务数量：{}", processId + "-" + startNode.getId() + "-" + jobId, todoNodeList.size());
 
         // 处理结果
         Map<String, Object> dataMap = CollectionUtils.createValueMap()
@@ -100,23 +105,25 @@ public class WorkFlowService {
      * @param nodeId    当前节点ID
      * @return 结果
      */
-    public synchronized ResultBean<List<NodeBean>> getNextTask(Integer jobId, Integer processId, Integer nodeId) {
+    public ResultBean<List<NodeBean>> getNextTask(Integer jobId, Integer processId, Integer nodeId) {
         ResultBean<List<NodeBean>> result = new ResultBean<>();
         // 00-完成当前任务
         taskService.finishTask(jobId, nodeId);
 
         // 01-获取下一任务节点
         List<NodeBean> todoNodeList = this.getTodoTask(jobId, processId, nodeId);
-        if (todoNodeList == null) {
+        if (CollectionUtils.isEmpty(todoNodeList)) {
+            logger.info("【WF->>{}】, 当前任务无执行节点。", processId + "-" + nodeId + "-" + jobId);
             return successReturn(result);
         } else if (todoNodeList.size() == 1 && todoNodeList.get(0).getType().equals(Constants.TASK_END)) {
+            logger.info("【WF->>{}】, 返回结束节点-{}", processId + "-" + nodeId + "-" + jobId, todoNodeList.get(0).getId());
             return finishJob(result, jobId);
         }
         todoNodeList.forEach(x -> {
             taskService.startTask(jobId, processId, x.getId());
         });
 
-        logger.info("待执行任务数量{}", todoNodeList.size());
+        logger.info("【WF->>{}】, 下一待执行任务数量：{}", processId + "-" + nodeId + "-" + jobId, todoNodeList.size());
 
         // 处理结果
         Map<String, Object> dataMap = CollectionUtils.createValueMap()
@@ -140,12 +147,14 @@ public class WorkFlowService {
 
         // 查询指向节点
         List<PathPO> toNodeList = pathService.queryPath(processId, nodeId, null);
-        if (toNodeList == null || toNodeList.size() == 0)
+        if (toNodeList == null || toNodeList.size() == 0) {
+            logger.info("【WF->>{}】, 当前任务无下一节点。", processId + "-" + nodeId + "-" + jobId);
             return null;
+        }
+
 
         // 获取待执行节点
         toNodeList.forEach(x -> {
-
             // 查询前置任务节点
             List<Integer> fromNodeList = pathService.queryPath(processId, null, x.getToNode())
                     .stream().map(PathPO::getFromNode).collect(Collectors.toList());
@@ -157,6 +166,8 @@ public class WorkFlowService {
                 BeanUtils.copyProperties(nodePO, nodeBean);
                 nodeBean.setFromNodeList(fromNodeList);
                 todoNodeList.add(nodeBean);
+            } else {
+                logger.info("【WF->>{}】, 作业节点：{}前置任务尚未执行完毕", processId + "-" + nodeId + "-" + jobId, x.getToNode());
             }
 
         });
