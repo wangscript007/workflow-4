@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.vbrug.workflow</groupId>
+    <artifactId>workflow-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <url>www</url>
+    <description>workflow</description>
+    
+    <modules>
+        <module>workflow-core</module>
+        <module>workflow-web</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+        <mybatis.version>3.5.1</mybatis.version>
+        <mybatis.spring.version>2.0.1</mybatis.spring.version>
+        <java.version>1.8</java.version>
+        <junit.jupiter.version>5.6.2</junit.jupiter.version>
+        <slf4j.version>1.7.26</slf4j.version>
+        <mysql.connect.version>8.0.16</mysql.connect.version>
+        <maven-compile-plugin.version>3.7.0</maven-compile-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
+        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
+    
+</project>
