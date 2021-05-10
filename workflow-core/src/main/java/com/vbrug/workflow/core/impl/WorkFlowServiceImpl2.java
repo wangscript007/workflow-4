@@ -1,9 +1,9 @@
-package com.vbrug.workflow.core.service;
+package com.vbrug.workflow.core.impl;
 
 import com.vbrug.fw4j.common.util.BeanUtils;
 import com.vbrug.fw4j.common.util.CollectionUtils;
 import com.vbrug.workflow.core.bean.NodeBean;
-import com.vbrug.workflow.core.bean.ResultBean;
+import com.vbrug.workflow.core.bean.Result;
 import com.vbrug.workflow.core.constants.Constants;
 import com.vbrug.workflow.core.exceptions.WorkFlowException;
 import com.vbrug.workflow.core.persistence.definition.node.po.NodePO;
@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
  * @since 1.0.0
  */
 @Component
-public class WorkFlowService {
+public class WorkFlowServiceImpl2 {
 
-    private static final Logger logger = LoggerFactory.getLogger(WorkFlowService.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkFlowServiceImpl2.class);
 
     @Resource
     private NodeService nodeService;
@@ -51,12 +51,12 @@ public class WorkFlowService {
      * 启动作业
      */
     @Transactional(rollbackFor = Throwable.class, propagation = Propagation.REQUIRED)
-    public ResultBean<List<NodeBean>> startJob(Integer processId) {
+    public Result<List<NodeBean>> startJob(Integer processId) {
 
-        ResultBean<List<NodeBean>> result = new ResultBean<>();
+        Result<List<NodeBean>> result = new Result<>();
 
         // 00-启动作业
-        int jobId = jobService.startJob(processId);
+        int jobId = jobService.startExecuteJob(processId, Constants.JOB_STATE_EXECUTING);
 
         // 01-处理开始节点
         NodePO startNode = nodeService.findStartNode(processId);
@@ -104,8 +104,8 @@ public class WorkFlowService {
      * @param nodeId    当前节点ID
      * @return 结果
      */
-    public ResultBean<List<NodeBean>> execute(Integer jobId, Integer processId, Integer nodeId) {
-        ResultBean<List<NodeBean>> result = new ResultBean<>();
+    public Result<List<NodeBean>> execute(Integer jobId, Integer processId, Integer nodeId) {
+        Result<List<NodeBean>> result = new Result<>();
         // 00-完成当前任务
         taskService.finishTask(jobId, nodeId);
 
@@ -177,7 +177,7 @@ public class WorkFlowService {
      * @param jobId 作业ID
      * @return 结果Bean
      */
-    private <T> ResultBean<T> finishJob(ResultBean<T> result, Integer jobId) {
+    private <T> Result<T> finishJob(Result<T> result, Integer jobId) {
         jobService.finishJob(jobId);
         result.setStatus(Constants.STATUS_CODE_5);
         return result;
@@ -188,7 +188,7 @@ public class WorkFlowService {
      * @param dataMap 结果数据
      * @return 结果Bean
      */
-    private <T> ResultBean<T> successReturn(ResultBean<T> result) {
+    private <T> Result<T> successReturn(Result<T> result) {
         result.setStatus(Constants.STATUS_CODE_0);
         result.setMessage("ok");
         return result;

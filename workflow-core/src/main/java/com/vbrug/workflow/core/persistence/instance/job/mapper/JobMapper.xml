@@ -2,19 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.vbrug.workflow.core.persistence.instance.job.mapper.JobMapper">
     
-    <!-- 获取下一节点ID -->
-    <select id="getNextId" resultType="int">
-        select ifnull(max(id)+1, 1) from wf_act_job
-    </select>
-
     <!-- 插入 -->
     <insert id="insert">
-        insert into wf_act_job(id, process_id, state, start_time, remark)
+        insert into wf_act_job(id, process_id, state, create_time, params, remark)
             value (
                 #{id  },
                 #{processId  },
                 #{state  },
                 now(),
+                #{params},
                 #{remark  }
             )
     </insert>

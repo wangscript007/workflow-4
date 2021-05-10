@@ -11,7 +11,16 @@ public class PathPO {
     private Integer id;                                // 路径编号
     private Integer processId;                         // 流程编号
     private Integer fromNode;                          // 起始节点
+    private Integer precondition;                      // 前置条件
     private Integer toNode;                            // 目标节点
+
+    public Integer getPrecondition() {
+        return precondition;
+    }
+
+    public void setPrecondition(Integer precondition) {
+        this.precondition = precondition;
+    }
 
     public Integer getId() {
         return id;

@@ -6,36 +6,45 @@ package com.vbrug.workflow.core.persistence.instance.job.po;
  */
 public class JobPO {
 
-    private Integer id;                                // 作业ID
-    private Integer processId;                         // 流程ID
-    private Integer state;                             // 状态（0-执行中，1-成功，9-失败）
-    private String startTime;                          // 开始时间
+    private long   id;                                // 作业ID
+    private int    processId;                         // 流程ID
+    private int    state;                             // 状态（0-执行中，1-成功，9-失败）
+    private String createTime;                         // 创建时间
+    private String startTime;                          // 执行开始时间
     private String endTime;                            // 结束时间
-    private Integer retryTimes;                        // 重试次数
+    private String params;                             // 参数
     private String remark;                             // 备注
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Integer getProcessId() {
+    public int getProcessId() {
         return processId;
     }
 
-    public void setProcessId(Integer processId) {
+    public void setProcessId(int processId) {
         this.processId = processId;
     }
 
-    public Integer getState() {
+    public int getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(int state) {
         this.state = state;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
     public String getStartTime() {
@@ -54,12 +63,12 @@ public class JobPO {
         this.endTime = endTime;
     }
 
-    public Integer getRetryTimes() {
-        return retryTimes;
+    public String getParams() {
+        return params;
     }
 
-    public void setRetryTimes(Integer retryTimes) {
-        this.retryTimes = retryTimes;
+    public void setParams(String params) {
+        this.params = params;
     }
 
     public String getRemark() {

@@ -7,29 +7,39 @@ package com.vbrug.workflow.core.persistence.instance.task.po;
  */
 public class TaskPO {
 
-    private Integer jobId;                             // 作业ID
-    private Integer processId;                         // 流程ID
+    private long    id;                                // 任务ID
+    private long    jobId;                             // 作业ID
     private Integer nodeId;                            // 节点ID
+    private Integer childNodeId;                            // 子节点
     private Integer state;                             // 状态（0-执行中，1-成功，9-失败）
-    private String  startTime;                         // 开始时间
-    private String  updateTime;                        // 更新时间
+    private String  startTime;                          // 开始时间
+    private String  endTime;                         // 结束时间
+    private String  params;                             // 任务参数
     private Integer retryTimes;                        // 重试次数
-    private String  remark;                            // 备注
+    private String  remark;                             // 备注
 
-    public Integer getJobId() {
+    public Integer getChildNodeId() {
+        return childNodeId;
+    }
+
+    public void setChildNodeId(Integer childNodeId) {
+        this.childNodeId = childNodeId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getJobId() {
         return jobId;
     }
 
-    public void setJobId(Integer jobId) {
+    public void setJobId(long jobId) {
         this.jobId = jobId;
-    }
-
-    public Integer getProcessId() {
-        return processId;
-    }
-
-    public void setProcessId(Integer processId) {
-        this.processId = processId;
     }
 
     public Integer getNodeId() {
@@ -56,12 +66,20 @@ public class TaskPO {
         this.startTime = startTime;
     }
 
-    public String getUpdateTime() {
-        return updateTime;
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 
     public Integer getRetryTimes() {

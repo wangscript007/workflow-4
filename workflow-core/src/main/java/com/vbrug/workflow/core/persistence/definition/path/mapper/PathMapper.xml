@@ -7,14 +7,14 @@
         select id, process_id, from_node, to_node
         from wf_def_path
         <where>
-            <if test="processId != null">
-                and process_id = #{processId}
-            </if>
             <if test="fromNode != null">
                 and from_node = #{fromNode}
             </if>
             <if test="toNode != null">
                 and to_node = #{toNode}
+            </if>
+            <if test="precondition != null">
+                and precondition = #{precondition}
             </if>
         </where>
     </select>

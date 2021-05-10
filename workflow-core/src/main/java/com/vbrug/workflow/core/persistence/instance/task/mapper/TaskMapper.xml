@@ -4,16 +4,40 @@
 
     <!-- 插入 -->
     <insert id="insert">
-        insert into wf_act_task(job_id, process_id, node_id, state, start_time, remark)
+        insert into wf_act_task(id, job_id, node_id, state, start_time, retryTimes, remark)
             value (
+                #{id  },
                 #{jobId  },
-                #{processId  },
                 #{nodeId  },
                 #{state  },
                 now(),
+                #{retryTimes  },
                 #{remark  }
             )
     </insert>
+    
+    <select id="gTaskDTO" resultType="com.vbrug.workflow.core.persistence.instance.task.dto.TaskDTO">
+        select t.id task_id, t.job_id, a.process_id, t.node_id, t.child_node_id,
+                a.`group` node_group, a.name node_name, a.type node_type
+        from wf_act_task t
+                 left join wf_def_node a on t.node_id = a.id
+        <where>
+            <if test="taskId != null">
+                and t.id = #{taskId}
+            </if>
+            <if test="taskIdList != null">
+                and t.id in
+                <foreach collection="taskIdList" open="(" item="item" close=")" separator=",">#{item}</foreach>
+            </if>
+            <if test="jobId != null">
+                and t.job_id = #{jobId}
+            </if>
+            <if test="state != null">
+                and t.state = #{state}
+            </if>
+        </where>
+        where t.id = ''
+    </select>
     
     <!-- 更新任务状态 -->
     <update id="updateState">

@@ -1,60 +1,61 @@
 package com.vbrug.workflow.core.persistence.instance.task.service;
 
-import com.vbrug.workflow.core.constants.Constants;
-import com.vbrug.workflow.core.persistence.instance.task.po.TaskPO;
-import com.vbrug.workflow.core.persistence.instance.task.mapper.TaskMapper;
-import org.springframework.stereotype.Service;
+import com.vbrug.workflow.core.persistence.instance.job.po.JobPO;
+import com.vbrug.workflow.core.persistence.instance.task.dto.TaskDTO;
 
-import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 任务Service
- *
  * @author vbrug
  * @since 1.0.0
  */
-@Service
-public class TaskService {
-
-    @Resource
-    private TaskMapper mapper;
+public interface TaskService {
 
     /**
-     * 启动任务
+     * 执行流程开始任务
+     * @param jobPO 作业对象
+     * @return 开始任务ID
      */
-    public int startTask(Integer jobId, Integer processId, Integer nodeId){
-        TaskPO po = new TaskPO();
-        po.setJobId(jobId);
-        po.setProcessId(processId);
-        po.setNodeId(nodeId);
-        po.setState(Constants.TASK_STATE_0);
-        return mapper.insert(po);
-    }
-
+    long doStartTask(JobPO jobPO);
 
     /**
-     * 更新任务状态
+     * 执行子流程开始任务
+     * @param jobPO          作业对象
+     * @param childProcessId 子流程ID
+     * @return 开始任务ID
      */
-    public int updateState(Integer jobId, Integer nodeId, Integer state){
-        return mapper.updateState(jobId, nodeId, state);
-    }
+    long doStartTask(JobPO jobPO, Integer childProcessId);
 
     /**
-     * 完成作业
+     * 完成任务
+     * @param taskId       待完成的任务ID
+     * @param resultParams 任务结果参数
+     * @return 执行结果
      */
-    public int finishTask(Integer jobId, Integer nodeId){
-        return mapper.finishTask(jobId, nodeId);
-    }
+    int completeTask(long taskId, Map<String, Object> resultParams);
 
     /**
-     * 查询前置完成的任务数量
-     *
+     * 重跑任务
+     * @param taskId 待重跑任务ID
+     * @return 任务信息
+     */
+    TaskDTO redoTask(long taskId);
+
+    /**
+     * 获取待执行任务
+     * @param lastTaskId   上一完成任务ID
+     * @param precondition 前置判断条件
+     * @return 待执行任务信息数组
+     */
+    List<TaskDTO> gTodoTasks(long lastTaskId, int precondition);
+
+    /**
+     * 获取作业失败任务
      * @param jobId 作业ID
-     * @param preNodeList 前置节点Id 集合
-     * @return 完成任务数量
+     * @return 失败任务信息数组
      */
-    public int getFinishedPreTaskCount(Integer jobId, List<Integer> preNodeList){
-        return mapper.getFinishedPreTaskCount(jobId, preNodeList);
-    }
+    List<TaskDTO> gFailTasks(long jobId);
+
 }

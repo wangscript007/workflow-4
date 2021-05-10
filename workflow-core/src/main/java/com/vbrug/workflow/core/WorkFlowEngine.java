@@ -3,8 +3,8 @@ package com.vbrug.workflow.core;
 import com.vbrug.fw4j.common.util.IdGenerator;
 import com.vbrug.fw4j.core.spring.SpringHelp;
 import com.vbrug.workflow.core.bean.NodeBean;
-import com.vbrug.workflow.core.bean.ResultBean;
-import com.vbrug.workflow.core.service.WorkFlowService;
+import com.vbrug.workflow.core.bean.Result;
+import com.vbrug.workflow.core.impl.WorkFlowServiceImpl2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public class WorkFlowEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkFlowEngine.class);
 
-    private final WorkFlowService service = SpringHelp.getBean(WorkFlowService.class);
+    private final WorkFlowServiceImpl2 service = SpringHelp.getBean(WorkFlowServiceImpl2.class);
 
     private WorkFlowEngine() {}
 
@@ -33,11 +33,13 @@ public class WorkFlowEngine {
         return WorkFlowEngineHolder.instance;
     }
 
+    public
+
 
     /**
      * 启动作业
      */
-    public ResultBean<List<NodeBean>> startJob(Integer processId) {
+    public Result<List<NodeBean>> startJob(Integer processId) {
         IdGenerator.nextMillis();
         logger.info("WF->> {} 工作流启动", processId);
         return service.startJob(processId);
@@ -46,7 +48,7 @@ public class WorkFlowEngine {
     /**
      * 获取下一任务
      */
-    public ResultBean<List<NodeBean>> executeTask(Integer jobId, Integer nodeId) {
+    public Result<List<NodeBean>> executeTask(Integer jobId, Integer nodeId) {
         logger.info("WF->>{}, 执行作业任务-{}", processId, jobId + "-" + nodeId);
         return service.execute(jobId, processId, nodeId);
     }
