@@ -4,11 +4,12 @@
 
     <!-- 插入 -->
     <insert id="insert">
-        insert into wf_act_task(id, job_id, node_id, state, start_time, retryTimes, remark)
+        insert into wf_act_task(id, job_id, node_id, parent_id, state, start_time, retryTimes, remark)
             value (
                 #{id  },
                 #{jobId  },
                 #{nodeId  },
+                #{parentId  },
                 #{state  },
                 now(),
                 #{retryTimes  },
@@ -16,19 +17,59 @@
             )
     </insert>
     
-    <select id="gTaskDTO" resultType="com.vbrug.workflow.core.persistence.instance.task.dto.TaskDTO">
-        select t.id task_id, t.job_id, a.process_id, t.node_id, t.child_node_id,
+    <!-- 更新任务信息 -->
+    <update id="update">
+        update wf_act_task
+        <set>
+            <if test="state != null">
+                t.state = #{state},
+            </if>
+            <if test="params != null">
+                t.params = #{params},
+            </if>
+            <if test="updEndTime">
+                end_time = now(),
+            </if>
+            update_time = now()
+        </set>
+        where id = #{id}
+    </update>
+    
+    <!-- 更新重试次数 -->
+    <update id="updateRetryTimes">
+        update wf_def_node
+        set retry_times = retry_times + 1,
+            update_time = now()
+        <where>
+            <if test="taskIds != null">
+                and t.id in
+                <foreach collection="taskIds" open="(" item="item" close=")" separator=",">#{item}</foreach>
+            </if>
+        </where>
+    </update>
+    
+    <!-- 查询任务详情 -->
+    <select id="gTaskDTO" resultType="com.vbrug.workflow.core.persistence.instance.task.entity.TaskDTO">
+        select t.id task_id, t.job_id, b.process_id job_process_id, a.process_id node_process_id, t.node_id, t.parent_id parent_task_id,
+               a.`group` node_group, a.name node_name, a.type node_type
+        from wf_act_task t
+                 left join wf_def_node a on t.node_id = a.id
+                 left join wf_act_job b on t.job_id = b.id;
+        <where>
+            <if test="taskIds != null">
+                and t.id in
+                <foreach collection="taskIds" open="(" item="item" close=")" separator=",">#{item}</foreach>
+            </if>
+        </where>
+    </select>
+    
+    <!-- 查询作业任务详情 -->
+    <select id="gTaskDTOByJob" resultType="com.vbrug.workflow.core.persistence.instance.task.entity.TaskDTO">
+        select t.id task_id, t.job_id, a.process_id, t.node_id, t.parent_id parent_task_id,
                 a.`group` node_group, a.name node_name, a.type node_type
         from wf_act_task t
                  left join wf_def_node a on t.node_id = a.id
         <where>
-            <if test="taskId != null">
-                and t.id = #{taskId}
-            </if>
-            <if test="taskIdList != null">
-                and t.id in
-                <foreach collection="taskIdList" open="(" item="item" close=")" separator=",">#{item}</foreach>
-            </if>
             <if test="jobId != null">
                 and t.job_id = #{jobId}
             </if>
@@ -36,33 +77,47 @@
                 and t.state = #{state}
             </if>
         </where>
-        where t.id = ''
     </select>
     
-    <!-- 更新任务状态 -->
-    <update id="updateState">
-        update wf_act_task
-            set state = #{state}, update_time = now()
-        where job_id = #{jobId} and node_id = #{nodeId}
-    </update>
     
-    <!-- 完成任务 -->
-    <update id="finishTask">
-        update wf_act_task
-            set state = 1, update_time = now()
-        where job_id = #{jobId} and node_id = #{nodeId}
-    </update>
-    
-    <!-- 查询前置未完成的任务数量 -->
-    <select id="getFinishedPreTaskCount" resultType="int">
-        select count(1)
-            from wf_act_task
+    <!-- 查询任务 -->
+    <select id="query" resultType="com.vbrug.workflow.core.persistence.instance.task.entity.TaskPO">
+        select * from wf_act_task
         <where>
-            and state = 1
-            and job_id = #{jobId}
-            and node_id in
-            <foreach collection="preNodeList" open="(" item="item" close=")" separator=",">#{item}</foreach>
+            <if test="jobId != null">
+                and job_id = #{jobId}
+            </if>
+            <if test="state != null">
+                and state = #{state}
+            </if>
+            <if test="unfinishedTask">
+                and state != 2
+            </if>
+            <if test="nodeIds != null">
+                and nodeId in
+                <foreach collection="nodeIds" open="(" item="item" close=")" separator=",">#{item}</foreach>
+            </if>
         </where>
     </select>
+    
+    <!-- 迁移已完成的任务到历史表 -->
+    <insert id="migrateCompleteTask">
+        insert into wf_his_task(id, job_id, node_id, parent_id, state, start_time, end_time, params, remark, update_time)
+        select id,
+               job_id,
+               node_id,
+               parent_id,
+               state,
+               start_time,
+               end_time,
+               params,
+               retry_times,
+               remark,
+               update_time
+        from wf_act_task
+        where job_id = #{0}
+    </insert>
+    
+    
 </mapper>
 

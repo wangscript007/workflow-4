@@ -24,11 +24,11 @@ public class WorkFlowException extends RuntimeException {
         super(cause);
     }
 
-    public WorkFlowException(Throwable cause, String message, String... params) {
+    public WorkFlowException(Throwable cause, String message, Object... params) {
         super(StringUtils.replaceZW(message, "{}", params), cause);
     }
 
-    public WorkFlowException(String message, String... params) {
+    public WorkFlowException(String message, Object... params) {
         super(StringUtils.replaceZW(message, "{}", params));
     }
 }

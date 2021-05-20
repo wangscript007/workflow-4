@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.vbrug.workflow"})
-@MapperScan(basePackages = {"com.vbrug.workflow.persistence.**.mapper"})
+@MapperScan(basePackages = {"com.vbrug.workflow.core.persistence.**.mapper"})
 public class APP {
 
     public static void main(String[] args) throws IOException {

@@ -1,6 +1,9 @@
-package com.vbrug.workflow.core.bean;
+package com.vbrug.workflow.core.entity;
+
+import com.vbrug.workflow.core.persistence.instance.task.entity.TaskDTO;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 返回数据Bean
@@ -9,11 +12,12 @@ import java.io.Serializable;
  */
 public class Result implements Serializable {
 
-    private static final long    serialVersionUID = 4932690413041014964L;
-    private              Integer status;                                         // 状态码
-    private              String  message;                                        // 消息
-    private              Object  data;                                           // 数据
-    private              String  remark;                                         // 备注
+    private static final long     serialVersionUID = 4932690413041014964L;
+    private              Integer  status;                                         // 状态码
+    private              String   message;                                        // 消息
+    private              Object   data;                                           // 数据
+    private final        DataWrap dataWrap         = new DataWrap();              // 数据包装类
+    private              String   remark;                                         // 备注
 
     public static Result success() {
         Result result = new Result();
@@ -38,6 +42,10 @@ public class Result implements Serializable {
     public void setResultStatus(ResultStatus resultStatus) {
         this.status = resultStatus.getStatus();
         this.message = resultStatus.getMessage();
+    }
+
+    public DataWrap dataWrap() {
+        return dataWrap;
     }
 
     public Integer getStatus() {
@@ -70,5 +78,16 @@ public class Result implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public class DataWrap {
+
+        public Long getLong() {
+            return (Long) data;
+        }
+
+        public List<TaskDTO> getTaskDTOS(){
+            return (List<TaskDTO>) data;
+        }
     }
 }

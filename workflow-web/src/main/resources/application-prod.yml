@@ -14,10 +14,10 @@ mybatis:
 # spring settings
 spring:
   application:
-    name: dataroute
+    name: workflow
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.168.31.27:3306/lk_test?characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/dataroute?characterEncoding=UTF-8
     username: root
     password: oec!Server
     hikari:
@@ -28,9 +28,9 @@ spring:
 
 # server settings
 server:
-  port: 9081
+  port: 9888
   servlet:
-    context-path: /dataroute
+    context-path: /workflow
     session:
       timeout: 30
   tomcat:

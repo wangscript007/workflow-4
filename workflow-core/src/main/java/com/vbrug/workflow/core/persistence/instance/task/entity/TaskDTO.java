@@ -1,4 +1,4 @@
-package com.vbrug.workflow.core.persistence.instance.task.dto;
+package com.vbrug.workflow.core.persistence.instance.task.entity;
 
 /**
  * @author vbrug
@@ -6,45 +6,47 @@ package com.vbrug.workflow.core.persistence.instance.task.dto;
  */
 public class TaskDTO {
 
-    private long    taskId;                                // 任务ID
-    private long    jobId;                             // 作业ID
-    private Integer processId;                         // 流程ID
+    private Long    taskId;                            // 任务ID
+    private Long    jobId;                             // 作业ID
+    private Integer jobProcessId;                         // 作业工作流ID
+    private Long    parentTaskId;                      // 父节点ID
     private Integer nodeId;                            // 节点ID
-    private Integer childNodeId;                            // 节点ID
+    private Integer nodeProcessId;                         // 作业工作流ID
     private String  nodeGroup;                         // 分组
     private String  nodeName;                          // 节点名称
     private String  nodeType;                          // 节点类型
 
-    public Integer getChildNodeId() {
-        return childNodeId;
-    }
 
-    public void setChildNodeId(Integer childNodeId) {
-        this.childNodeId = childNodeId;
-    }
-
-    public long getTaskId() {
+    public Long getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(long taskId) {
+    public void setTaskId(Long taskId) {
         this.taskId = taskId;
     }
 
-    public long getJobId() {
+    public Long getJobId() {
         return jobId;
     }
 
-    public void setJobId(long jobId) {
+    public void setJobId(Long jobId) {
         this.jobId = jobId;
     }
 
-    public Integer getProcessId() {
-        return processId;
+    public Integer getJobProcessId() {
+        return jobProcessId;
     }
 
-    public void setProcessId(Integer processId) {
-        this.processId = processId;
+    public void setJobProcessId(Integer jobProcessId) {
+        this.jobProcessId = jobProcessId;
+    }
+
+    public Long getParentTaskId() {
+        return parentTaskId;
+    }
+
+    public void setParentTaskId(Long parentTaskId) {
+        this.parentTaskId = parentTaskId;
     }
 
     public Integer getNodeId() {
@@ -53,6 +55,14 @@ public class TaskDTO {
 
     public void setNodeId(Integer nodeId) {
         this.nodeId = nodeId;
+    }
+
+    public Integer getNodeProcessId() {
+        return nodeProcessId;
+    }
+
+    public void setNodeProcessId(Integer nodeProcessId) {
+        this.nodeProcessId = nodeProcessId;
     }
 
     public String getNodeGroup() {

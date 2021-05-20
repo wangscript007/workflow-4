@@ -22,10 +22,6 @@ public class ProcessService {
     private ProcessService processService;
 
 
-    public int start(int processId) {
-
-    }
-
     /**
      * 查询流程详情
      * @param processId 流程编号

@@ -1,7 +1,6 @@
 package com.vbrug.workflow.core.persistence.instance.job.service;
 
-import com.vbrug.workflow.core.persistence.instance.job.po.JobPO;
-import org.springframework.stereotype.Service;
+import com.vbrug.workflow.core.persistence.instance.job.entity.JobPO;
 
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import java.util.Map;
  * @author vbrug
  * @since 1.0.0
  */
-@Service
 public interface JobService {
 
     /**
@@ -24,11 +22,26 @@ public interface JobService {
      * @param id 作业ID
      * @return 结果
      */
-    int startExecuteJob(int id);
+    int startExecuteJob(long id);
 
-    JobPO find(int id);
+    /**
+     * 查找作业信息
+     * @param id 作业ID
+     * @return 作业对象
+     */
+    JobPO find(long id);
 
-    Map<String, Object> getJobContext(int jobId);
+    /**
+     * 获取作业环境信息
+     * @param jobId 作业编号
+     * @return 结果
+     */
+    Map<String, Object> getJobContext(long jobId);
 
-    int completeJob(int jobId);
+    /**
+     * 完成作业
+     * @param jobId 作业编号
+     * @return 结果
+     */
+    int completeJob(long jobId);
 }

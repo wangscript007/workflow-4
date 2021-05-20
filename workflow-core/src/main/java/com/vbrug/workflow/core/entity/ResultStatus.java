@@ -1,4 +1,4 @@
-package com.vbrug.workflow.core.bean;
+package com.vbrug.workflow.core.entity;
 
 /**
  * @author vbrug

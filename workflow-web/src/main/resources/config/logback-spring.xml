@@ -11,7 +11,7 @@
             <pattern>%d %-5level [%thread] %logger{20} %line: %msg%n</pattern>
         </layout>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
+            <level>DEBUG</level>
         </filter>
     </appender>
     
@@ -54,7 +54,7 @@
 
     <logger name="org.springframework" level="INFO" additivity="true"/>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="console"/>
         <appender-ref ref="file_info"/>
         <appender-ref ref="file_error"/>

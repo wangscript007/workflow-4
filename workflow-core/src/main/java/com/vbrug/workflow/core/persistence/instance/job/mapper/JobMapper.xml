@@ -16,18 +16,40 @@
     </insert>
     
     <!-- 更新任务状态 -->
-    <update id="updateState">
+    <update id="update">
         update wf_act_job
-            set state = #{state}, update_time = now()
+        <set>
+            <if test="state != null">
+                t.state = #{state},
+            </if>
+            <if test="params != null">
+                t.params = #{params},
+            </if>
+            <if test="updEndTime">
+                end_time = now(),
+            </if>
+            <if test="updStartTime">
+                start_time = now(),
+            </if>
+            update_time = now()
+        </set>
         where id = #{id}
     </update>
     
-    
-    <!-- 完成Job -->
-    <update id="finishJob">
-        update wf_act_job
-            set state = 1, update_time = now()
-        where id = #{id}
+    <!-- 迁移完成Job -->
+    <update id="migrateCompleteJob">
+        insert into wf_his_job(id, process_id, state, create_time, start_time, end_time, params, remark, update_time)
+        select id,
+               process_id,
+               state,
+               create_time,
+               start_time,
+               end_time,
+               params,
+               remark,
+               update_time
+        from wf_act_job
+        where id = #{0}
     </update>
 </mapper>
 
